@@ -1,0 +1,466 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<style>
+    /* Override container for login page */
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 400px);
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 1rem;
+    }
+
+    .login-wrapper {
+        background: #ffffff;
+        padding: 3rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+
+    .classic-theme .login-wrapper {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: background 0.3s ease;
+    }
+
+    .classic-theme .login-icon {
+        background: linear-gradient(135deg, #991b1b, #7f1d1d);
+    }
+
+    .login-icon svg {
+        width: 35px;
+        height: 35px;
+        fill: white;
+    }
+
+    .login-form h1 {
+        color: #1e3a8a;
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .classic-theme .login-form h1 {
+        color: #60a5fa;
+    }
+
+    .login-subtitle {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+        transition: color 0.3s ease;
+    }
+
+    .classic-theme .login-subtitle {
+        color: #94a3b8;
+    }
+
+    .admin-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .classic-theme .admin-badge {
+        background: #450a0a;
+        color: #fca5a5;
+    }
+
+    .admin-badge svg {
+        width: 14px;
+        height: 14px;
+        fill: currentColor;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #334155;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+
+    .classic-theme .form-group label {
+        color: #cbd5e1;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        transition: color 0.3s;
+    }
+
+    .input-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+    }
+
+    .login-form input {
+        width: 100%;
+        padding: 0.9rem 1rem 0.9rem 2.8rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f9fafb;
+        color: #1a202c;
+    }
+
+    .classic-theme .login-form input {
+        background: #334155;
+        color: #e2e8f0;
+        border-color: #475569;
+    }
+
+    .login-form input:focus {
+        border-color: #dc2626;
+        background: white;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .classic-theme .login-form input:focus {
+        background: #1e293b;
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .login-form input:focus ~ .input-icon {
+        color: #dc2626;
+    }
+
+    .classic-theme .login-form input:focus ~ .input-icon {
+        color: #ef4444;
+    }
+
+    .login-form input::placeholder {
+        color: #9ca3af;
+    }
+
+    .classic-theme .login-form input::placeholder {
+        color: #64748b;
+    }
+
+    .login-form button {
+        width: 100%;
+        padding: 1rem;
+        background: #dc2626;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 0.5rem;
+    }
+
+    .login-form button:hover {
+        background: #b91c1c;
+    }
+
+    .login-form button:focus {
+        outline: 2px solid #ef4444;
+        outline-offset: 2px;
+    }
+
+    .text-danger {
+        background: #fef2f2;
+        color: #dc2626;
+        padding: 0.9rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        border: 1px solid #fecaca;
+        transition: all 0.3s ease;
+    }
+
+    .classic-theme .text-danger {
+        background: #450a0a;
+        border-color: #7f1d1d;
+        color: #fca5a5;
+    }
+
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 1px;
+        background: #e5e7eb;
+        transition: background 0.3s ease;
+    }
+
+    .classic-theme .divider::before {
+        background: #334155;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+
+    .classic-theme .divider span {
+        background: #1e293b;
+        color: #64748b;
+    }
+
+    .extra-links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .extra-links a {
+        color: #dc2626;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+    }
+
+    .classic-theme .extra-links a {
+        color: #ef4444;
+    }
+
+    .extra-links a:hover {
+        color: #b91c1c;
+        text-decoration: underline;
+    }
+
+    .classic-theme .extra-links a:hover {
+        color: #fca5a5;
+    }
+
+    .back-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        color: #64748b;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .classic-theme .back-link {
+        border-top-color: #334155;
+        color: #94a3b8;
+    }
+
+    .back-link a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .classic-theme .back-link a {
+        color: #60a5fa;
+    }
+
+    .back-link a:hover {
+        color: #1e40af;
+        text-decoration: underline;
+    }
+
+    .classic-theme .back-link a:hover {
+        color: #93c5fd;
+    }
+
+    .back-link a svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+    }
+
+    /* Password toggle icon */
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #94a3b8;
+        transition: color 0.2s;
+    }
+
+    .password-toggle:hover {
+        color: #dc2626;
+    }
+
+    .classic-theme .password-toggle:hover {
+        color: #ef4444;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .login-wrapper {
+            padding: 2rem 1.5rem;
+        }
+
+        .login-form h1 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-wrapper">
+        <div class="login-header">
+            <div class="login-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+            </div>
+            <h1>Admin Login</h1>
+            <p class="login-subtitle">Secure access to administration panel</p>
+            <div style="display: flex; justify-content: center;">
+                <div class="admin-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                    </svg>
+                    Admin Access Only
+                </div>
+            </div>
+        </div>
+
+        <form method="POST" action="{% url 'AdminLoginCheck' %}" class="login-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="loginid">Admin ID</label>
+                <div class="input-wrapper">
+                    <input type="text" name="loginid" id="loginid" required placeholder="Enter admin ID" autocomplete="username">
+                    <span class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" name="password" id="password" required placeholder="Enter admin password" autocomplete="current-password">
+                    <span class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                    </span>
+                    <span class="password-toggle" onclick="togglePassword()">
+                        <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <button type="submit">
+                <span style="display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                    </svg>
+                    Admin Sign In
+                </span>
+            </button>
+
+            {% if messages %}
+            <div class="text-danger">
+                {% for message in messages %}
+                    {{ message }}<br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </form>
+
+        <div class="back-link">
+            <a href="{% url 'index' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eye-icon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+        }
+    }
+</script>
+{% endblock %}

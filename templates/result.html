@@ -1,0 +1,854 @@
+{% extends 'Userbase.html' %}
+{% block content %}
+<style>
+    .results-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 3px solid #e5e7eb;
+    }
+
+    .classic-theme .page-header {
+        border-bottom-color: #334155;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+    }
+
+    .classic-theme .page-header h1 {
+        color: #a5b4fc;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        color: #64748b;
+    }
+
+    .classic-theme .page-header p {
+        color: #94a3b8;
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .metric-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+
+    .classic-theme .metric-card {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .metric-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .metric-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .metric-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .metric-icon svg {
+        width: 24px;
+        height: 24px;
+        fill: white;
+    }
+
+    .metric-icon.accuracy {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .metric-icon.precision {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .metric-icon.recall {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    .metric-icon.f1 {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .metric-icon.detection {
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+    }
+
+    .metric-icon.fpr {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .metric-icon.time {
+        background: linear-gradient(135deg, #ec4899, #db2777);
+    }
+
+    .metric-icon.cpu {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+    }
+
+    .metric-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #64748b;
+    }
+
+    .classic-theme .metric-label {
+        color: #94a3b8;
+    }
+
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a202c;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .classic-theme .metric-value {
+        color: #e2e8f0;
+    }
+
+    .metric-suffix {
+        font-size: 1.5rem;
+        color: #64748b;
+        margin-left: 0.25rem;
+    }
+
+    .classic-theme .metric-suffix {
+        color: #94a3b8;
+    }
+
+    .chart-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+    }
+
+    .classic-theme .chart-section {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .chart-header {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .classic-theme .chart-header {
+        color: #e2e8f0;
+        border-bottom-color: #334155;
+    }
+
+    .confusion-matrix {
+        display: grid;
+        grid-template-columns: auto 1fr 1fr;
+        gap: 1rem;
+        max-width: 500px;
+        margin: 2rem auto;
+    }
+
+    .cm-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .classic-theme .cm-label {
+        color: #94a3b8;
+    }
+
+    .cm-cell {
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cm-cell-label {
+        font-size: 0.75rem;
+        opacity: 0.9;
+        margin-top: 0.25rem;
+    }
+
+    .cm-tn {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .cm-fp {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .cm-fn {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .cm-tp {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .download-section {
+        text-align: center;
+        margin-top: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        border-radius: 12px;
+        border: 2px dashed #3b82f6;
+    }
+
+    .classic-theme .download-section {
+        background: linear-gradient(135deg, #1e293b, #334155);
+        border-color: #475569;
+    }
+
+    .download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .download-btn svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .performance-bars {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .bar-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .bar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bar-label {
+        font-weight: 600;
+        color: #1a202c;
+        font-size: 0.95rem;
+    }
+
+    .classic-theme .bar-label {
+        color: #e2e8f0;
+    }
+
+    .bar-value {
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        color: #64748b;
+    }
+
+    .classic-theme .bar-value {
+        color: #94a3b8;
+    }
+
+    .bar-container {
+        height: 24px;
+        background: #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .classic-theme .bar-container {
+        background: #334155;
+    }
+
+    .bar-fill {
+        height: 100%;
+        border-radius: 12px;
+        transition: width 1s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bar-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .classic-theme .download-title {
+        color: #a5b4fc !important;
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+        }
+
+        .confusion-matrix {
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .cm-cell {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="results-container">
+    <div class="page-header">
+        <h1>🛡️ Intrusion Detection Results</h1>
+        <p>Hybrid Model: LightGBM + Isolation Forest</p>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon accuracy">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">Accuracy</div>
+            </div>
+            <div class="metric-value">
+                {{ result.accuracy }}<span class="metric-suffix">%</span>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon precision">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">Precision</div>
+            </div>
+            <div class="metric-value">
+                {{ result.precision }}<span class="metric-suffix">%</span>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon recall">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">Recall</div>
+            </div>
+            <div class="metric-value">
+                {{ result.recall }}<span class="metric-suffix">%</span>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon f1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">F1 Score</div>
+            </div>
+            <div class="metric-value">
+                {{ result.f1_score }}<span class="metric-suffix">%</span>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon detection">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">Detection Rate</div>
+            </div>
+            <div class="metric-value">
+                {{ result.detection_rate }}<span class="metric-suffix">%</span>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon fpr">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">False Positive Rate</div>
+            </div>
+            <div class="metric-value">
+                {{ result.false_positive_rate }}<span class="metric-suffix">%</span>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon time">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">Response Time</div>
+            </div>
+            <div class="metric-value">
+                {{ result.response_time }}<span class="metric-suffix">s</span>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-icon cpu">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+                    </svg>
+                </div>
+                <div class="metric-label">CPU Usage</div>
+            </div>
+            <div class="metric-value">
+                {{ result.cpu_usage }}<span class="metric-suffix">%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confusion Matrix -->
+    <div class="chart-section">
+        <h2 class="chart-header">📊 Confusion Matrix</h2>
+        <div class="confusion-matrix">
+            <div></div>
+            <div class="cm-label">Predicted: Normal</div>
+            <div class="cm-label">Predicted: Attack</div>
+            
+            <div class="cm-label">Actual: Normal</div>
+            <div class="cm-cell cm-tn">
+                {% if result.confusion_matrix %}
+                <div>{{ result.confusion_matrix.0.0 }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                <div class="cm-cell-label">True Negative</div>
+            </div>
+            <div class="cm-cell cm-fp">
+                {% if result.confusion_matrix %}
+                <div>{{ result.confusion_matrix.0.1 }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                <div class="cm-cell-label">False Positive</div>
+            </div>
+            
+            <div class="cm-label">Actual: Attack</div>
+            <div class="cm-cell cm-fn">
+                {% if result.confusion_matrix %}
+                <div>{{ result.confusion_matrix.1.0 }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                <div class="cm-cell-label">False Negative</div>
+            </div>
+            <div class="cm-cell cm-tp">
+                {% if result.confusion_matrix %}
+                <div>{{ result.confusion_matrix.1.1 }}</div>
+                {% else %}
+                <div>0</div>
+                {% endif %}
+                <div class="cm-cell-label">True Positive</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Metrics Chart -->
+    <div class="chart-section">
+        <h2 class="chart-header">📈 Classification Metrics</h2>
+        <canvas id="metricsChart"></canvas>
+    </div>
+
+    <!-- Performance Bars -->
+    <div class="chart-section">
+        <h2 class="chart-header">🎯 Detailed Performance Metrics</h2>
+        <div class="performance-bars">
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">Accuracy</span>
+                    <span class="bar-value">{{ result.accuracy }}%</span>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-fill" style="width: {{ result.accuracy }}%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+                </div>
+            </div>
+
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">Precision</span>
+                    <span class="bar-value">{{ result.precision }}%</span>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-fill" style="width: {{ result.precision }}%; background: linear-gradient(90deg, #3b82f6, #2563eb);"></div>
+                </div>
+            </div>
+
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">Recall (Detection Rate)</span>
+                    <span class="bar-value">{{ result.recall }}%</span>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-fill" style="width: {{ result.recall }}%; background: linear-gradient(90deg, #8b5cf6, #7c3aed);"></div>
+                </div>
+            </div>
+
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">F1 Score</span>
+                    <span class="bar-value">{{ result.f1_score }}%</span>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-fill" style="width: {{ result.f1_score }}%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Distribution -->
+    <div class="chart-section">
+        <h2 class="chart-header">🔍 Class Distribution</h2>
+        <canvas id="distributionChart"></canvas>
+    </div>
+
+    <!-- Download Section -->
+    <div class="download-section">
+        <h3 style="margin-bottom: 1rem; color: #1e3a8a;" class="download-title">Export Report</h3>
+        <a href="{% url 'download_pdf' %}" class="download-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+            Download PDF Report
+        </a>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+/* ================= THEME HELPERS ================= */
+
+function getCurrentTheme() {
+    return document.body.classList.contains('classic-theme');
+}
+
+function getThemeColors() {
+    const isDark = getCurrentTheme();
+    return {
+        textColor: isDark ? '#e2e8f0' : '#1a202c',
+        gridColor: isDark ? '#334155' : '#e5e7eb',
+        tooltipBg: isDark ? '#1e293b' : '#ffffff'
+    };
+}
+
+function updateDownloadTitleColor() {
+    const downloadTitle = document.querySelector('.download-title');
+    if (downloadTitle) {
+        downloadTitle.style.color = getCurrentTheme() ? '#a5b4fc' : '#1e3a8a';
+    }
+}
+
+// Initialize theme colors
+updateDownloadTitleColor();
+const { textColor, gridColor, tooltipBg } = getThemeColors();
+const isDarkTheme = getCurrentTheme();
+
+/* ================= WAIT FOR CHART.JS TO LOAD ================= */
+
+if (typeof Chart === 'undefined') {
+    console.error('Chart.js failed to load. Please check your internet connection.');
+} else {
+    
+    /* ================= METRICS BAR CHART ================= */
+    
+    const metricsCtx = document.getElementById('metricsChart');
+    if (metricsCtx) {
+        const metricsChart = new Chart(metricsCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Accuracy', 'Precision', 'Recall', 'F1 Score'],
+                datasets: [{
+                    label: 'Performance Metrics (%)',
+                    data: [
+                        {{ result.accuracy|default:0 }},
+                        {{ result.precision|default:0 }},
+                        {{ result.recall|default:0 }},
+                        {{ result.f1_score|default:0 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(245, 158, 11, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgb(16, 185, 129)',
+                        'rgb(59, 130, 246)',
+                        'rgb(139, 92, 246)',
+                        'rgb(245, 158, 11)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            font: { size: 14, weight: '500' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: tooltipBg,
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: gridColor,
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: textColor,
+                            callback: value => value + '%'
+                        },
+                        grid: { color: gridColor }
+                    },
+                    x: {
+                        ticks: { color: textColor },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    }
+    
+    /* ================= CLASS DISTRIBUTION CHART ================= */
+    
+    const distributionCtx = document.getElementById('distributionChart');
+    if (distributionCtx) {
+        {% if result.confusion_matrix %}
+        const confusionMatrix = {{ result.confusion_matrix|safe }};
+        const tn = confusionMatrix[0][0];
+        const fp = confusionMatrix[0][1];
+        const fn = confusionMatrix[1][0];
+        const tp = confusionMatrix[1][1];
+        const normalClass = tn + fp;
+        const attackClass = fn + tp;
+        {% else %}
+        const normalClass = 8812;
+        const attackClass = 3596;
+        {% endif %}
+        
+        const distributionChart = new Chart(distributionCtx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Normal (Class 0)', 'Attack (Class 1)'],
+                datasets: [{
+                    data: [normalClass, attackClass],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(239, 68, 68, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgb(16, 185, 129)',
+                        'rgb(239, 68, 68)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            font: { size: 14, weight: '500' },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: tooltipBg,
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: gridColor,
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            label: function (context) {
+                                const total = normalClass + attackClass;
+                                const value = context.parsed;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${context.label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    /* ================= DYNAMIC THEME UPDATES (NO RELOAD) ================= */
+    
+    const observer = new MutationObserver(() => {
+        const newColors = getThemeColors();
+        const newIsDark = getCurrentTheme();
+        
+        // Update download title color
+        updateDownloadTitleColor();
+        
+        // Update metrics chart if it exists
+        if (typeof metricsChart !== 'undefined' && metricsChart) {
+            metricsChart.options.plugins.legend.labels.color = newColors.textColor;
+            metricsChart.options.plugins.tooltip.backgroundColor = newColors.tooltipBg;
+            metricsChart.options.plugins.tooltip.titleColor = newColors.textColor;
+            metricsChart.options.plugins.tooltip.bodyColor = newColors.textColor;
+            metricsChart.options.plugins.tooltip.borderColor = newColors.gridColor;
+            metricsChart.options.scales.y.ticks.color = newColors.textColor;
+            metricsChart.options.scales.y.grid.color = newColors.gridColor;
+            metricsChart.options.scales.x.ticks.color = newColors.textColor;
+            metricsChart.options.scales.x.grid.color = newColors.gridColor;
+            metricsChart.update();
+        }
+        
+        // Update distribution chart if it exists
+        if (typeof distributionChart !== 'undefined' && distributionChart) {
+            distributionChart.options.plugins.legend.labels.color = newColors.textColor;
+            distributionChart.options.plugins.tooltip.backgroundColor = newColors.tooltipBg;
+            distributionChart.options.plugins.tooltip.titleColor = newColors.textColor;
+            distributionChart.options.plugins.tooltip.bodyColor = newColors.textColor;
+            distributionChart.options.plugins.tooltip.borderColor = newColors.gridColor;
+            distributionChart.update();
+        }
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+}
+
+/* ================= ANIMATE BARS ON LOAD ================= */
+
+window.addEventListener('load', () => {
+    const bars = document.querySelectorAll('.bar-fill');
+    bars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.width = width;
+        }, 100);
+    });
+});
+</script>
+
+
+{% endblock %}

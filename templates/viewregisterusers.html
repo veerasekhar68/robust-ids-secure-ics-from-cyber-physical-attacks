@@ -1,0 +1,315 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+<style>
+    .title-section {
+        text-align: center;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .title-section h2 {
+        color: #1e3a8a;
+        font-size: 2rem;
+        font-weight: 700;
+        border-bottom: 3px solid #dc2626;
+        display: inline-block;
+        padding-bottom: 8px;
+        transition: color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .classic-theme .title-section h2 {
+        color: #60a5fa;
+        border-bottom-color: #991b1b;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+        margin: 1.5rem auto;
+        max-width: 1200px;
+        padding: 1.5rem;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+
+    .classic-theme .table-wrapper {
+        background-color: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    th, td {
+        padding: 14px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+        transition: border-color 0.3s ease;
+    }
+
+    .classic-theme th,
+    .classic-theme td {
+        border-bottom-color: #334155;
+    }
+
+    th {
+        background-color: #dc2626;
+        color: #ffffff;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .classic-theme th {
+        background-color: #991b1b;
+    }
+
+    tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    .classic-theme tbody tr:hover {
+        background-color: #334155;
+    }
+
+    .classic-theme td {
+        color: #e2e8f0;
+    }
+
+    .btn {
+        padding: 6px 14px;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-block;
+        margin: 2px;
+        border: 1px solid transparent;
+    }
+
+    .btn-primary {
+        background-color: #16a34a;
+        color: #ffffff;
+        border-color: #15803d;
+    }
+
+    .btn-primary:hover {
+        background-color: #15803d;
+        border-color: #166534;
+    }
+
+    .classic-theme .btn-primary {
+        background-color: #22c55e;
+        border-color: #16a34a;
+    }
+
+    .classic-theme .btn-primary:hover {
+        background-color: #16a34a;
+        border-color: #15803d;
+    }
+
+    .btn-secondary {
+        background-color: #eab308;
+        color: #1a202c;
+        border-color: #ca8a04;
+    }
+
+    .btn-secondary:hover {
+        background-color: #ca8a04;
+        border-color: #a16207;
+    }
+
+    .classic-theme .btn-secondary {
+        background-color: #fbbf24;
+        border-color: #eab308;
+        color: #1a202c;
+    }
+
+    .classic-theme .btn-secondary:hover {
+        background-color: #eab308;
+        border-color: #ca8a04;
+    }
+
+    .btn-danger {
+        background-color: #dc2626;
+        color: #ffffff;
+        border-color: #b91c1c;
+    }
+
+    .btn-danger:hover {
+        background-color: #b91c1c;
+        border-color: #991b1b;
+    }
+
+    .classic-theme .btn-danger {
+        background-color: #ef4444;
+        border-color: #dc2626;
+    }
+
+    .classic-theme .btn-danger:hover {
+        background-color: #dc2626;
+        border-color: #b91c1c;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .badge-warning {
+        background-color: #fbbf24;
+        color: #1a202c;
+    }
+
+    .classic-theme .badge-warning {
+        background-color: #fbbf24;
+        color: #1a202c;
+    }
+
+    .badge-success {
+        background-color: #16a34a;
+        color: #ffffff;
+    }
+
+    .classic-theme .badge-success {
+        background-color: #22c55e;
+        color: #ffffff;
+    }
+
+    .badge-secondary {
+        background-color: #6b7280;
+        color: #ffffff;
+    }
+
+    .classic-theme .badge-secondary {
+        background-color: #9ca3af;
+        color: #1a202c;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+        font-style: italic;
+        transition: color 0.3s ease;
+    }
+
+    .classic-theme .no-data {
+        color: #9ca3af;
+    }
+
+    @media screen and (max-width: 768px) {
+        .table-wrapper {
+            padding: 1rem;
+        }
+
+        th, td {
+            font-size: 0.85rem;
+            padding: 10px 8px;
+        }
+
+        .btn {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+        }
+
+        .title-section h2 {
+            font-size: 1.5rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .title-section h2 {
+            font-size: 1.2rem;
+        }
+
+        th, td {
+            font-size: 0.75rem;
+            padding: 8px 4px;
+        }
+
+        .btn {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            margin: 1px;
+        }
+    }
+</style>
+
+<div class="title-section">
+    <h2>Registered User Details</h2>
+</div>
+
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>Login ID</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Locality</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.loginid }}</td>
+                <td>{{ user.mobile }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.locality }}</td>
+                <td>
+                    {% if user.status == 'waiting' %}
+                        <span class="badge badge-warning">Waiting</span>
+                    {% elif user.status == 'activated' %}
+                        <span class="badge badge-success">Activated</span>
+                    {% elif user.status == 'deactivated' %}
+                        <span class="badge badge-secondary">Deactivated</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.status == 'waiting' or user.status == 'deactivated' %}
+                        <a class="btn btn-primary" href="{% url 'ActivaUsers' %}?uid={{ user.id }}">Activate</a>
+                    {% endif %}
+                    {% if user.status == 'activated' %}
+                        <a class="btn btn-secondary" href="{% url 'deactivate_user' %}?uid={{ user.id }}">Deactivate</a>
+                    {% endif %}
+                    <a class="btn btn-danger" href="{% url 'delete_user' %}?uid={{ user.id }}" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="no-data">No registered users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

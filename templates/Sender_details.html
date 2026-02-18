@@ -1,0 +1,439 @@
+{% extends 'userbase.html' %}
+{% block content %}
+<style>
+    .page-header {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+    }
+
+    .classic-theme .page-header {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+    }
+
+    .classic-theme .page-header h1 {
+        color: #60a5fa;
+    }
+
+    .page-header p {
+        color: #6b7280;
+        font-size: 1rem;
+    }
+
+    .classic-theme .page-header p {
+        color: #9ca3af;
+    }
+
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        transition: transform 0.2s ease;
+    }
+
+    .classic-theme .stat-card {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .classic-theme .stat-label {
+        color: #9ca3af;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e3a8a;
+    }
+
+    .classic-theme .stat-value {
+        color: #60a5fa;
+    }
+
+    .controls-section {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .classic-theme .controls-section {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .items-per-page {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .items-per-page label {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #1a202c;
+    }
+
+    .classic-theme .items-per-page label {
+        color: #e2e8f0;
+    }
+
+    .items-per-page select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        background: white;
+        cursor: pointer;
+        transition: border-color 0.2s ease;
+    }
+
+    .classic-theme .items-per-page select {
+        background: #0f172a;
+        border-color: #334155;
+        color: #e2e8f0;
+    }
+
+    .items-per-page select:focus {
+        outline: none;
+        border-color: #3b82f6;
+    }
+
+    .table-wrapper {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        overflow-x: auto;
+        margin-bottom: 2rem;
+    }
+
+    .classic-theme .table-wrapper {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    th {
+        background: linear-gradient(135deg, #1e3a8a, #6d28d9);
+        color: white;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .classic-theme th {
+        background: linear-gradient(135deg, #1e293b, #4c1d95);
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        color: #1a202c;
+    }
+
+    .classic-theme td {
+        border-bottom-color: #334155;
+        color: #e2e8f0;
+    }
+
+    tr:hover td {
+        background: #f9fafb;
+    }
+
+    .classic-theme tr:hover td {
+        background: #334155;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        padding: 1.5rem;
+    }
+
+    .pagination-info {
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-right: 1rem;
+    }
+
+    .classic-theme .pagination-info {
+        color: #9ca3af;
+    }
+
+    .page-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #1a202c;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .classic-theme .page-btn {
+        background: #1e293b;
+        border-color: #334155;
+        color: #e2e8f0;
+    }
+
+    .page-btn:hover:not(.disabled) {
+        background: #f3f4f6;
+        border-color: #9ca3af;
+    }
+
+    .classic-theme .page-btn:hover:not(.disabled) {
+        background: #334155;
+        border-color: #475569;
+    }
+
+    .page-btn.active {
+        background: linear-gradient(135deg, #1e3a8a, #6d28d9);
+        color: white;
+        border-color: transparent;
+    }
+
+    .classic-theme .page-btn.active {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+
+    .page-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .error-message {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #fecaca;
+        margin-bottom: 2rem;
+    }
+
+    .classic-theme .error-message {
+        background: #7f1d1d;
+        color: #fecaca;
+        border-color: #991b1b;
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .stats-bar {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .controls-section {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        th, td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .pagination {
+            gap: 0.25rem;
+        }
+
+        .page-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-bar {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% if error %}
+    <div class="error-message">
+        <strong>Error:</strong> {{ error }}
+    </div>
+{% else %}
+    <div class="page-header">
+        <h1>📤 Sender Network Details</h1>
+        <p>Comprehensive view of sender-side network traffic and statistics</p>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Total Records</div>
+            <div class="stat-value">{{ stats.total_records|default:0 }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Unique Senders</div>
+            <div class="stat-value">{{ stats.unique_senders|default:0 }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Avg Packets</div>
+            <div class="stat-value">{{ stats.avg_packets|default:0 }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Avg Bytes</div>
+            <div class="stat-value">{{ stats.avg_bytes|default:0 }}</div>
+        </div>
+    </div>
+
+    <div class="controls-section">
+        <div class="items-per-page">
+            <label for="itemsPerPage">Items per page:</label>
+            <select id="itemsPerPage" onchange="changeItemsPerPage(this.value)">
+                <option value="10" {% if items_per_page == 10 %}selected{% endif %}>10</option>
+                <option value="25" {% if items_per_page == 25 %}selected{% endif %}>25</option>
+                <option value="50" {% if items_per_page == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if items_per_page == 100 %}selected{% endif %}>100</option>
+            </select>
+        </div>
+        <div class="pagination-info">
+            Showing {{ sender_data.start_index }} - {{ sender_data.end_index }} of {{ sender_data.paginator.count }} records
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Address</th>
+                    <th>MACs</th>
+                    <th>IPs</th>
+                    <th>Packets</th>
+                    <th>Bytes Sum</th>
+                    <th>Load</th>
+                    <th>Protocol</th>
+                    <th>Duration</th>
+                    <th>TTL</th>
+                    <th>Ack Rate</th>
+                    <th>Syn Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in sender_data %}
+                <tr>
+                    <td>{{ forloop.counter|add:sender_data.start_index|add:"-1" }}</td>
+                    <td>{{ record.sAddress|default:"-" }}</td>
+                    <td>{{ record.sMACs|default:"-" }}</td>
+                    <td>{{ record.sIPs|default:"-" }}</td>
+                    <td>{{ record.sPackets|default:"-" }}</td>
+                    <td>{{ record.sBytesSum|default:"-" }}</td>
+                    <td>{{ record.sLoad|default:"-" }}</td>
+                    <td>{{ record.protocol|default:"-" }}</td>
+                    <td>{{ record.duration|default:"-" }}</td>
+                    <td>{{ record.sttl|default:"-" }}</td>
+                    <td>{{ record.sAckRate|default:"-" }}</td>
+                    <td>{{ record.sSynRate|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12" style="text-align: center; padding: 2rem;">No sender data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if sender_data.has_other_pages %}
+    <div class="pagination">
+        {% if sender_data.has_previous %}
+            <a href="?page=1&items_per_page={{ items_per_page }}" class="page-btn">First</a>
+            <a href="?page={{ sender_data.previous_page_number }}&items_per_page={{ items_per_page }}" class="page-btn">Previous</a>
+        {% else %}
+            <span class="page-btn disabled">First</span>
+            <span class="page-btn disabled">Previous</span>
+        {% endif %}
+
+        {% for num in sender_data.paginator.page_range %}
+            {% if sender_data.number == num %}
+                <span class="page-btn active">{{ num }}</span>
+            {% elif num > sender_data.number|add:'-3' and num < sender_data.number|add:'3' %}
+                <a href="?page={{ num }}&items_per_page={{ items_per_page }}" class="page-btn">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if sender_data.has_next %}
+            <a href="?page={{ sender_data.next_page_number }}&items_per_page={{ items_per_page }}" class="page-btn">Next</a>
+            <a href="?page={{ sender_data.paginator.num_pages }}&items_per_page={{ items_per_page }}" class="page-btn">Last</a>
+        {% else %}
+            <span class="page-btn disabled">Next</span>
+            <span class="page-btn disabled">Last</span>
+        {% endif %}
+    </div>
+    {% endif %}
+{% endif %}
+
+<script>
+    function changeItemsPerPage(value) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('items_per_page', value);
+        urlParams.set('page', '1'); // Reset to first page
+        window.location.search = urlParams.toString();
+    }
+</script>
+{% endblock %}

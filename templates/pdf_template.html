@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<style>
+body {
+    font-family: Helvetica;
+    font-size: 11px;
+}
+
+h2 {
+    text-align: center;
+    font-weight: bold;
+}
+
+h3 {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 4px;
+}
+</style>
+
+</head>
+<body>
+
+<h2>ICS Intrusion Detection System Report</h2>
+
+<p>
+<b>Generated On:</b> {{ timestamp }} <br/>
+<b>System IP:</b> {{ system_ip }} <br/>
+<b>User:</b> {{ user }} <br/>
+<b>Session ID:</b> {{ session_id }}
+</p>
+
+<hr/>
+
+<h3>Model Performance Metrics</h3>
+
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Accuracy</td><td>{{ accuracy }}</td></tr>
+<tr><td>Precision</td><td>{{ precision }}</td></tr>
+<tr><td>Recall</td><td>{{ recall }}</td></tr>
+<tr><td>F1 Score</td><td>{{ f1_score }}</td></tr>
+</table>
+
+<h3>Confusion Matrix</h3>
+
+<table width="100%">
+    <tr>
+        <th rowspan="2">Actual \\ Predicted</th>
+        <th colspan="2">Predicted</th>
+    </tr>
+    <tr>
+        <th>Normal</th>
+        <th>Malicious</th>
+    </tr>
+
+    <tr>
+        <th>Actual Normal</th>
+        <td>{{ cm.0.0 }}</td>
+        <td>{{ cm.0.1 }}</td>
+    </tr>
+
+    <tr>
+        <th>Actual Malicious</th>
+        <td>{{ cm.1.0 }}</td>
+        <td>{{ cm.1.1 }}</td>
+    </tr>
+</table>
+
+
+<h3>Intrusion Detection Log</h3>
+
+{% if report %}
+<table>
+<tr>
+    <th>Timestamp</th>
+    <th>Source IP</th>
+    <th>Destination IP</th>
+    <th>Attack Type</th>
+    <th>Status</th>
+</tr>
+
+{% for row in report %}
+<tr>
+    <td>{{ row.timestamp }}</td>
+    <td>{{ row.source_ip }}</td>
+    <td>{{ row.destination_ip }}</td>
+    <td>{{ row.attack_type }}</td>
+    <td>{{ row.status }}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<p>No intrusion detected.</p>
+{% endif %}
+
+</body>
+</html>

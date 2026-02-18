@@ -1,0 +1,338 @@
+{% extends 'userbase.html' %}
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .profile-header {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        text-align: center;
+    }
+
+    .classic-theme .profile-header {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #1e3a8a, #6d28d9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .classic-theme .profile-avatar {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+
+    .profile-avatar svg {
+        width: 60px;
+        height: 60px;
+        fill: white;
+    }
+
+    .profile-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+    }
+
+    .classic-theme .profile-header h1 {
+        color: #60a5fa;
+    }
+
+    .profile-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .status-activated {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .classic-theme .status-activated {
+        background: #166534;
+        color: #dcfce7;
+    }
+
+    .status-waiting {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .classic-theme .status-waiting {
+        background: #92400e;
+        color: #fef3c7;
+    }
+
+    .profile-details {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 2rem;
+    }
+
+    .classic-theme .profile-details {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-details h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e3a8a;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .classic-theme .profile-details h2 {
+        color: #60a5fa;
+    }
+
+    .profile-details h2 svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+
+    .detail-row {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .classic-theme .detail-row {
+        border-bottom-color: #334155;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .classic-theme .detail-label {
+        color: #9ca3af;
+    }
+
+    .detail-label svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+    }
+
+    .detail-value {
+        color: #1a202c;
+        font-weight: 500;
+    }
+
+    .classic-theme .detail-value {
+        color: #e2e8f0;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3a8a, #6d28d9);
+        color: white;
+        box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(30, 58, 138, 0.3);
+    }
+
+    .classic-theme .btn-primary {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #1e3a8a;
+        border: 2px solid #e5e7eb;
+    }
+
+    .btn-secondary:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+    }
+
+    .classic-theme .btn-secondary {
+        background: #1e293b;
+        color: #60a5fa;
+        border-color: #334155;
+    }
+
+    .classic-theme .btn-secondary:hover {
+        background: #334155;
+        border-color: #475569;
+    }
+
+    @media (max-width: 768px) {
+        .profile-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .detail-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        </div>
+        <h1>{{ user.name }}</h1>
+        <span class="profile-status status-{{ user.status }}">
+            {{ user.status|title }}
+        </span>
+    </div>
+
+    <div class="profile-details">
+        <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            Profile Information
+        </h2>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 5.9c1.16 0 2.1.94 2.1 2.1s-.94 2.1-2.1 2.1S9.9 9.16 9.9 8s.94-2.1 2.1-2.1m0 9c2.97 0 6.1 1.46 6.1 2.1v1.1H5.9V17c0-.64 3.13-2.1 6.1-2.1M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 9c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                Full Name
+            </div>
+            <div class="detail-value">{{ user.name }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10h5v-2h-5c-4.34 0-8-3.66-8-8s3.66-8 8-8 8 3.66 8 8v1.43c0 .79-.71 1.57-1.5 1.57s-1.5-.78-1.5-1.57V12c0-2.76-2.24-5-5-5s-5 2.24-5 5 2.24 5 5 5c1.38 0 2.64-.56 3.54-1.47.65.89 1.77 1.47 2.96 1.47 1.97 0 3.5-1.6 3.5-3.57V12c0-5.52-4.48-10-10-10zm0 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                </svg>
+                Email
+            </div>
+            <div class="detail-value">{{ user.email }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
+                Mobile
+            </div>
+            <div class="detail-value">{{ user.mobile }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Locality
+            </div>
+            <div class="detail-value">{{ user.locality }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                </svg>
+                Login ID
+            </div>
+            <div class="detail-value">{{ user.loginid }}</div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'update_profile' %}" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+            Update Profile
+        </a>
+        <a href="{% url 'userhome' %}" class="btn btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            Back to Home
+        </a>
+    </div>
+</div>
+
+{% endblock %}

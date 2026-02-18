@@ -1,0 +1,10 @@
+{% extends 'Userbase.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">ICS Intrusion Detection</h2>
+    <form action="{% url 'detect_intrusion' %}" method="post" class="text-center">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-lg">Run IDS Detection</button>
+    </form>
+</div>
+{% endblock %}
