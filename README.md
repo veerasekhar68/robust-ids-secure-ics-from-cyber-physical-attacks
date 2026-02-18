@@ -1,6 +1,6 @@
-# 🔐 Robust IDS for Securing Industrial Control Systems Against Cyber-Physical Attacks
+#  Robust IDS for Securing Industrial Control Systems Against Cyber-Physical Attacks
 
-## 📌 Project Overview
+##  Project Overview
 
 This project focuses on protecting **Industrial Control Systems (ICS)** from cyber-physical attacks using an Intrusion Detection System (IDS).
 
@@ -33,7 +33,7 @@ Traditional IT security solutions are not sufficient for ICS environments. This 
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 - Python
 - Django
@@ -45,7 +45,7 @@ Traditional IT security solutions are not sufficient for ICS environments. This 
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 Control_Systems_Against_Cyber_Physical_Attacks/
@@ -59,7 +59,7 @@ requirements.txt
 
 ---
 
-## 🧠 Machine Learning Model
+##  Machine Learning Model
 
 - Anomaly Detection Approach
 - Classification-based intrusion detection
@@ -69,7 +69,7 @@ requirements.txt
 
 ---
 
-## 🔐 Security Approach
+##  Security Approach
 
 - Role-Based Access Control
 - Data Validation
@@ -78,7 +78,7 @@ requirements.txt
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 1. Clone the repository:
 
@@ -112,7 +112,7 @@ http://127.0.0.1:8000/
 
 ---
 
-## 📊 Future Improvements
+##  Future Improvements
 
 - Real-time network packet monitoring
 - Deep learning-based attack detection
@@ -121,7 +121,7 @@ http://127.0.0.1:8000/
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Veera Shekar Achari**  
 B.Tech – Information Technology  
@@ -129,6 +129,6 @@ Cybersecurity & Full-Stack Development Enthusiast
 
 ---
 
-## 📜 License
+##  License
 
 This project is developed for academic and research purposes.
